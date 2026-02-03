@@ -1,42 +1,54 @@
 package src;
-public class CardSystem {
 
-    String[] ids;        // store card IDs
-    String[] types;      // store card types
-    int[] pins;          // store card PINs (private)
-    int[] balances;      // store card balances
+class CardSystem {
 
-    int count;           // current number of cards stored
-    int maxSize;         // max cards allowed
+    Card[] cards;       // array of Card objects
+    int cardCount;      // how many cards stored
+    int maxSize;        // max cards allowed
+    String systemName;  // extra field (Week 3: 4 fields)
 
-    public CardSystem(int maxSize) {
+    CardSystem(int maxSize) {
         this.maxSize = maxSize;
-
-        ids = new String[maxSize];
-        types = new String[maxSize];
-        pins = new int[maxSize];
-        balances = new int[maxSize];
-
-        count = 0;
+        cards = new Card[maxSize];
+        cardCount = 0;
+        systemName = "Card Database";
     }
 
-    public void addTestCards() {
-        registerCard("A1234", "premium", 1111, 700);
-        registerCard("B1234", "vip", 2222, 1000);
-        registerCard("1234", "normal", 3333, 500);
+    String normalizeId(String id) {
+        return id.toUpperCase();
     }
 
-    public int findCardIndexById(String inputId) {
-        for (int i = 0; i < count; i++) {
-            if (ids[i].equals(inputId)) {
-                return i;
+    String getTypeFromId(String id) {
+        if (id.startsWith("A")) {
+            return "premium";
+        } else if (id.startsWith("B")) {
+            return "vip";
+        }
+        return "normal";
+    }
+
+    void addTestCards() {
+        registerCard("1234", 1111, 500);
+        registerCard("A1234", 2222, 700);
+        registerCard("B1234", 3333, 1000);
+    }
+
+    Card findCardById(String inputId) {
+        inputId = normalizeId(inputId);
+
+        for (int i = 0; i < cardCount; i++) {
+            if (cards[i].id.equals(inputId)) {
+                return cards[i];
             }
         }
-        return -1;
+        return null;
     }
 
-    public boolean registerCard(String newId, String newType, int newPin, int newBalance) {
-        if (count >= maxSize) {
+    boolean registerCard(String newId, int newPin, int newBalance) {
+
+        newId = normalizeId(newId);
+
+        if (cardCount >= maxSize) {
             System.out.println("Card system full! Cannot add more cards.");
             return false;
         }
@@ -56,106 +68,42 @@ public class CardSystem {
             return false;
         }
 
-        if (newType.equals("normal") == false &&
-            newType.equals("premium") == false &&
-            newType.equals("vip") == false) {
-
-            System.out.println("Invalid type! Use normal/premium/vip");
-            return false;
-        }
-
-        if (findCardIndexById(newId) != -1) {
+        Card found = findCardById(newId);
+        if (found != null) {
             System.out.println("This Card ID already exists!");
             return false;
         }
 
-        ids[count] = newId;
-        types[count] = newType;
-        pins[count] = newPin;
-        balances[count] = newBalance;
+        String newType = getTypeFromId(newId);
 
-        count = count + 1;
+        cards[cardCount] = new Card(newId, newType, newPin, newBalance);
+        cardCount = cardCount + 1;
 
         System.out.println("Card registered successfully!");
+        System.out.println("Auto Type: " + newType);
         return true;
-    }
-
-    public boolean verifyCard(String inputId, int inputPin) {
-        int index = findCardIndexById(inputId);
-        if (index == -1) {
-            return false;
-        }
-        if (pins[index] != inputPin) {
-            return false;
-        }
-        return true;
-    }
-
-    public boolean insertCard(Card card, String inputId, int inputPin) {
-        if (card.inserted == true) {
-            System.out.println("A card is already inserted!");
-            return false;
-        }
-
-        boolean ok = verifyCard(inputId, inputPin);
-        if (ok == false) {
-            System.out.println("Card ID or PIN is incorrect!");
-            return false;
-        }
-
-        int index = findCardIndexById(inputId);
-
-        card.id = ids[index];
-        card.type = types[index];
-        card.pin = pins[index];
-        card.balance = balances[index];
-        card.inserted = true;
-
-        System.out.println("Card inserted successfully.");
-        System.out.println("Card Type: " + card.type);
-        System.out.println("Balance: $" + (card.balance / 100.0));
-
-        return true;
-    }
-
-    public void updateBalance(Card card) {
-        int index = findCardIndexById(card.id);
-        if (index != -1) {
-            balances[index] = card.balance;
-        }
-    }
-
-    public void removeCard(Card card) {
-        if (card.inserted == false) {
-            System.out.println("No card inserted.");
-            return;
-        }
-
-        updateBalance(card);
-        card.clearCard();
-        System.out.println("Card removed.");
     }
 
     // ADMIN: show all cards (DO NOT show PIN)
-    public void adminShowAllCards() {
+    void adminShowAllCards() {
         System.out.println("\n===== ALL REGISTERED CARDS =====");
-        if (count == 0) {
+        if (cardCount == 0) {
             System.out.println("No cards in system.");
             return;
         }
 
-        for (int i = 0; i < count; i++) {
-            System.out.println((i + 1) + ") ID: " + ids[i]
-                    + " | Type: " + types[i]
-                    + " | Balance: $" + (balances[i] / 100.0));
+        for (int i = 0; i < cardCount; i++) {
+            System.out.println((i + 1) + ") ID: " + cards[i].id
+                    + " | Type: " + cards[i].type
+                    + " | Balance: $" + (cards[i].balance / 100.0));
         }
     }
 
     // ADMIN: top up card
-    public void adminTopUp(String id, int amount) {
-        int index = findCardIndexById(id);
+    void adminTopUp(String id, int amount) {
+        Card found = findCardById(id);
 
-        if (index == -1) {
+        if (found == null) {
             System.out.println("Card not found.");
             return;
         }
@@ -165,28 +113,33 @@ public class CardSystem {
             return;
         }
 
-        balances[index] = balances[index] + amount;
-        System.out.println("Top up successful. New Balance: $" + (balances[index] / 100.0));
+        found.balance = found.balance + amount;
+        System.out.println("Top up successful. New Balance: $" + (found.balance / 100.0));
     }
 
-    // ADMIN: block/delete card
-    public void adminDeleteCard(String id) {
-        int index = findCardIndexById(id);
+    // ADMIN: delete card
+    void adminDeleteCard(String id) {
+
+        id = normalizeId(id);
+
+        int index = -1;
+
+        for (int i = 0; i < cardCount; i++) {
+            if (cards[i].id.equals(id)) {
+                index = i;
+            }
+        }
 
         if (index == -1) {
             System.out.println("Card not found.");
             return;
         }
 
-        // Shift left to remove
-        for (int i = index; i < count - 1; i++) {
-            ids[i] = ids[i + 1];
-            types[i] = types[i + 1];
-            pins[i] = pins[i + 1];
-            balances[i] = balances[i + 1];
+        for (int i = index; i < cardCount - 1; i++) {
+            cards[i] = cards[i + 1];
         }
 
-        count = count - 1;
+        cardCount = cardCount - 1;
         System.out.println("Card deleted successfully.");
     }
 }

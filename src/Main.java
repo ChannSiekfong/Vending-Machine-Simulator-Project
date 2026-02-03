@@ -1,8 +1,9 @@
 package src;
+
 import java.util.Scanner;
 
-public class Main {
-    public static void main(String[] args) {
+class Main {
+    static void main(String[] args) {
 
         Scanner input = new Scanner(System.in);
 
@@ -17,12 +18,11 @@ public class Main {
 
         TransactionSystem recordSystem = new TransactionSystem(200);
 
-        // Inserted card object (must use parameter constructor)
-        Card currentCard = new Card("", "", 0, 0, false);
+        // session card starts as null
+        Card currentCard = null;
 
         VendingMachine vm = new VendingMachine(names, prices, stock, currentCard, cardSystem, recordSystem);
 
-        // ADMIN PIN (secret)
         int ADMIN_PIN = 9999;
 
         int running = 1;
@@ -38,7 +38,6 @@ public class Main {
             int startChoice = input.nextInt();
             input.nextLine();
 
-            // USER SECTION
             if (startChoice == 1) {
 
                 int userRunning = 1;
@@ -86,7 +85,6 @@ public class Main {
                     }
                 }
 
-            // ADMIN SECTION
             } else if (startChoice == 2) {
 
                 System.out.print("Enter Admin PIN: ");
@@ -119,9 +117,6 @@ public class Main {
                             System.out.print("New Card ID: ");
                             String id = input.nextLine();
 
-                            System.out.print("Type (normal/premium/vip): ");
-                            String type = input.nextLine();
-
                             System.out.print("PIN (4 digits): ");
                             int newPin = input.nextInt();
                             input.nextLine();
@@ -130,7 +125,7 @@ public class Main {
                             int balance = input.nextInt();
                             input.nextLine();
 
-                            cardSystem.registerCard(id, type, newPin, balance);
+                            cardSystem.registerCard(id, newPin, balance);
 
                         } else if (option == 3) {
                             System.out.print("Card ID to top up: ");

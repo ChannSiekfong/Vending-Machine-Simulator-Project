@@ -1,19 +1,21 @@
 package src;
-public class TransactionSystem {
 
-    String[] logs;   // store text logs
-    int count;       // current number of logs
-    int maxLogs;     // max log storage
+class TransactionSystem {
 
-    public TransactionSystem(int maxLogs) {
+    String[] logs;     // store text logs
+    int count;         // current number of logs
+    int maxLogs;       // max log storage
+    String systemName; // extra field (Week 3: 4 fields)
+
+    TransactionSystem(int maxLogs) {
         this.maxLogs = maxLogs;
         logs = new String[maxLogs];
         count = 0;
+        systemName = "Transaction Records";
     }
 
-    public void addLog(String message) {
+    void addLog(String message) {
         if (count >= maxLogs) {
-            // overwrite oldest
             for (int i = 0; i < maxLogs - 1; i++) {
                 logs[i] = logs[i + 1];
             }
@@ -25,7 +27,7 @@ public class TransactionSystem {
         count = count + 1;
     }
 
-    public void showLogs() {
+    void showLogs() {
         System.out.println("\n===== TRANSACTION RECORDS =====");
         if (count == 0) {
             System.out.println("No records yet.");

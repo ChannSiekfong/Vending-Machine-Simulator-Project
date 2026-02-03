@@ -1,16 +1,16 @@
 package src;
-public class VendingMachine {
 
-    String[] names;         // item names
-    int[] prices;           // item prices (cents)
-    int[] stock;            // item stock
+class VendingMachine {
 
-    Card currentCard;       // stores the card that is currently inserted in this machine
-    CardSystem cardSystem;  // card database
-    TransactionSystem recordSystem; // transaction record system
+    String[] names;
+    int[] prices;
+    int[] stock;
 
-    public VendingMachine(String[] names, int[] prices, int[] stock, Card currentCard, CardSystem cardSystem, TransactionSystem recordSystem) {
+    Card currentCard;                 // current session card (null means no card)
+    CardSystem cardSystem;
+    TransactionSystem recordSystem;
 
+    VendingMachine(String[] names, int[] prices, int[] stock, Card currentCard, CardSystem cardSystem, TransactionSystem recordSystem) {
         this.names = names;
         this.prices = prices;
         this.stock = stock;
@@ -20,7 +20,7 @@ public class VendingMachine {
         this.recordSystem = recordSystem;
     }
 
-    public void showItems() {
+    void showItems() {
         System.out.println("\n===== ITEMS =====");
         for (int i = 0; i < names.length; i++) {
             System.out.println((i + 1) + ") " + names[i]
@@ -30,7 +30,7 @@ public class VendingMachine {
 
         System.out.println("=================");
 
-        if (currentCard.inserted == true) {
+        if (currentCard != null) {
             System.out.println("Card Inserted: YES (" + currentCard.id + " | " + currentCard.type + ")");
             System.out.println("Balance: $" + (currentCard.balance / 100.0));
         } else {
@@ -38,15 +38,45 @@ public class VendingMachine {
         }
     }
 
-    public void insertCard(String id, int pin) {
-        cardSystem.insertCard(currentCard, id, pin);
+    void insertCard(String id, int pin) {
+
+        if (currentCard != null) {
+            System.out.println("A card is already inserted!");
+            return;
+        }
+
+        id = id.toUpperCase();
+
+        Card found = cardSystem.findCardById(id);
+
+        if (found == null) {
+            System.out.println("Card not found!");
+            return;
+        }
+
+        if (found.pin != pin) {
+            System.out.println("Wrong PIN!");
+            return;
+        }
+
+        currentCard = found;
+        System.out.println("Card inserted successfully.");
+        System.out.println("Card Type: " + currentCard.type);
+        System.out.println("Balance: $" + (currentCard.balance / 100.0));
     }
 
-    public void removeCard() {
-        cardSystem.removeCard(currentCard);
+    void removeCard() {
+        if (currentCard == null) {
+            System.out.println("No card inserted.");
+            return;
+        }
+
+        System.out.println("Card removed: " + currentCard.id);
+        currentCard = null;
     }
 
-    public void buyItem(int choice) {
+    void buyItem(int choice) {
+
         int index = choice - 1;
 
         if (index < 0 || index >= names.length) {
@@ -54,7 +84,7 @@ public class VendingMachine {
             return;
         }
 
-        if (currentCard.inserted == false) {
+        if (currentCard == null) {
             System.out.println("Please insert card first!");
             return;
         }
@@ -74,8 +104,6 @@ public class VendingMachine {
 
         currentCard.balance = currentCard.balance - finalPrice;
         stock[index] = stock[index] - 1;
-
-        cardSystem.updateBalance(currentCard);
 
         System.out.println("Dispensed: " + names[index]);
         System.out.println("Paid: $" + (finalPrice / 100.0));
