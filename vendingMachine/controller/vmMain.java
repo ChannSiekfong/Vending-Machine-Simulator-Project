@@ -230,7 +230,8 @@ public class vmMain {
     private static void printMainMenu() {
         System.out.println("\n=== MAIN MENU (Not Logged In) ===");
         System.out.println("1) User Login");
-        System.out.println("2) Guest Purchase (Quick Buy)");
+        System.out.println("2) View Revenue");
+        System.out.println("3) Guest Purchase (Quick Buy)");
         System.out.println("0) Exit");
     }
 
