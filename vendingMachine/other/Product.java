@@ -6,7 +6,7 @@ public class Product {
     private String name;
     private String category;
     private double price;
-    
+
     public Product(String name, String category, double price) {
         this.id = ++productCounter;
         this.name = name;
@@ -36,7 +36,7 @@ public class Product {
             return true;
         }
         return false;
-    }
+    } 
     
     @Override
     public String toString() {

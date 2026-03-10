@@ -39,7 +39,7 @@ public class Transaction {
         this.successful = true;
     }
     
-    @Override
+    @Override 
     public String toString() {
         return "Transaction{user='" + user.getUsername() + "', machine='" + machineLocation + "', slot='" + slotID + "', product='" + productName + "', charged=$" + charged + ", successful=" + successful + ", time='" + timestamp + "'}";
     }

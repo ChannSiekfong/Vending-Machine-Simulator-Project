@@ -23,7 +23,7 @@ public class PaymentService {
         double tax = computeTax(discountedPrice);
         double finalPrice = discountedPrice + tax;
         
-        // Apply loyalty discounts
+        // Apply loyalty discounts 
         if (itemsBought >= 10) finalPrice *= (1 - LOYALTY_TIER_1_DISCOUNT);
         else if (itemsBought >= 5) finalPrice *= (1 - LOYALTY_TIER_2_DISCOUNT);
         
@@ -44,8 +44,8 @@ public class PaymentService {
         
         boolean ok = user.debit(amount);
         if (!ok) return false;
-        
-        // Award loyalty points: 1 point per whole dollar charged
+
+        // Award loyalty points: 1 point per whole dollar charged 
         int points = (int) Math.floor(amount);
         if (points > 0) {
             user.addLoyaltyPoints(points);

@@ -10,7 +10,7 @@ public class vmMain {
         Scanner sc = new Scanner(System.in);
         VendingMachine vm = new VendingMachine("Lobby", 12);
 
-        // Core Learning Demo: Polymorphism in action
+        // Polymorphism in action
         System.out.println("=== Polymorphism Demo ===");
         for (User u : vm.getUsers()) {
             System.out.println(u.getUsername() + " (" + u.getRole() + ") can " + VendingMachine.PURCHASE + "? " + u.can(VendingMachine.PURCHASE));

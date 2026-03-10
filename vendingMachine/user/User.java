@@ -79,7 +79,7 @@ public abstract class User implements IUser {
     @Override
     public abstract boolean can(String action);
 
-    // ====== Setters (with simple validation) ======
+    // ====== Setters ======
     public void setUserId(String userId) {
         if (isBlank(userId)) this.userId = "UNKNOWN";
         else this.userId = userId.trim();

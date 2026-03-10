@@ -11,7 +11,7 @@ public class Slot {
         this.quantity = quantity;
     }
     
-    public String getSlotID() {
+    public String getSlotID() { 
         return slotID;
     }
     

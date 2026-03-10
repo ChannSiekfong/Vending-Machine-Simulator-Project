@@ -60,7 +60,7 @@ public class VendingMachine {
     }
     
     // =========================
-    // DEFAULT USERS (BOOTSTRAP)
+    // DEFAULT USERS 
     // =========================
     private void seedDefaultUsers() {
         Manager manager = new Manager("M001", "System Admin", "00000000", "admin", "admin123", 5000.0f);

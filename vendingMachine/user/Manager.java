@@ -9,7 +9,7 @@ public class Manager extends User {
         return true; 
     }
 
-    // ====== Constructor ======
+    // ====== Constructor ====== 
     public Manager(String userId, String fullName, String phone, String username, String password, float salary) {
         super(userId, fullName, phone, username, password);
         this.setSalary(salary);

@@ -10,7 +10,7 @@ public interface IUser {
     double getBalance();
     String getRole();
     boolean can(String action);
-    // Added for completeness (though lesson recommends ArrayList<User> for now)
+    
     int getItemsBought();
     int getLoyaltyPoints();
 }
